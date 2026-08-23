@@ -1,0 +1,12 @@
+{
+  "name": "marsrut-kuryer",
+  "version": "1.0.0",
+  "description": "Marşrut — Kuryer idarəetmə serveri",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
