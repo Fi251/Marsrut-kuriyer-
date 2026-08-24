@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marşrut İdarəçi</title>
+
+<link rel="manifest" href="/manifest-admin.webmanifest">
+<meta name="theme-color" content="#14171F">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="İdarəçi">
+<link rel="apple-touch-icon" href="/icons/icon-admin-192.png">
+<link rel="icon" href="/icons/icon-admin-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div id="gate" class="gate" style="display:none;"></div>
+
+<div id="app" style="display:none;">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><span class="dot"></span><h1>Marşrut</h1></div>
+      <div class="who" id="whoBox"></div>
+    </div>
+  </header>
+  <main id="main"></main>
+  <button class="fab" id="fabBtn" onclick="openFab()">+</button>
+  <nav class="bottomnav" id="bottomNav"></nav>
+</div>
+
+<div class="modal-bg" id="modalBg"><div class="modal" id="modalBody"></div></div>
+<div id="toast"></div>
+
+<script>window.ENTRY_MODE = 'admin';</script>
+<script src="/app.js"></script>
+</body>
+</html>
