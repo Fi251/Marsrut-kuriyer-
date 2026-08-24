@@ -76,6 +76,7 @@ const MIME = {
   '.js': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
+  '.webmanifest': 'application/manifest+json; charset=utf-8',
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
   '.ico': 'image/x-icon'
@@ -174,6 +175,39 @@ async function handleAPI(req, res, pathname) {
     if (db.orders.length === before) return sendJSON(res, 404, { error: 'Sifariş tapılmadı' });
     saveData(db);
     return sendJSON(res, 200, { ok: true });
+  }
+
+  // Kuryer öz canlı yerini paylaşır (yalnız özünə təyin olunmuş sifariş üçün)
+  if (method === 'POST' && (m = pathname.match(/^\/api\/orders\/([^/]+)\/location$/))) {
+    const b = await readBody(req);
+    const o = db.orders.find(x => x.id === m[1]);
+    if (!o) return sendJSON(res, 404, { error: 'Sifariş tapılmadı' });
+    if (!b.courierId || o.courierId !== b.courierId) {
+      return sendJSON(res, 403, { error: 'Bu sifariş sənə təyin edilməyib' });
+    }
+    const lat = Number(b.lat), lng = Number(b.lng);
+    if (!isFinite(lat) || !isFinite(lng)) return sendJSON(res, 400, { error: 'Yanlış koordinat' });
+    o.courierLocation = { lat, lng, updatedAt: Date.now() };
+    saveData(db);
+    return sendJSON(res, 200, { ok: true });
+  }
+
+  // Müştəri izləmə səhifəsi üçün açıq, məhdud məlumat (giriş tələb olunmur)
+  if (method === 'GET' && (m = pathname.match(/^\/api\/track\/([^/]+)$/))) {
+    const o = db.orders.find(x => x.id === m[1]);
+    if (!o) return sendJSON(res, 404, { error: 'Sifariş tapılmadı' });
+    const c = o.courierId ? db.couriers.find(x => x.id === o.courierId) : null;
+    return sendJSON(res, 200, {
+      id: o.id,
+      customerName: o.customerName,
+      address: o.address,
+      status: o.status,
+      createdAt: o.createdAt,
+      courierName: c ? c.name : null,
+      courierPhone: c ? c.phone : null,
+      courierVehicle: c ? c.vehicle : null,
+      courierLocation: (o.status === 'yolda' && o.courierLocation) ? o.courierLocation : null
+    });
   }
 
   if (method === 'POST' && pathname === '/api/couriers') {
